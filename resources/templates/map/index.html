@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+ <html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	 <head>
+         <div th:replace="~{fragment :: meta}"></div>   
+              
+         <div th:replace="~{fragment :: styles}"></div>
+         
+           
+         <title>地図</title>   
+     </head>
+     <body>
+		  <div class="nagoyameshi-wrapper">
+			  <div th:replace="~{fragment :: header}"></div>
+			  <main>
+				  <div class="container pt-4 pb-5 nagoyameshi-container">
+					  <div class="row justify-content-center">
+						  <div class="col-xxl-9 col-xl-10 col-lg-11">
+							  <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                 <ol class="breadcrumb mb-0">                        
+                                     <li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>
+                                     <li class="breadcrumb-item"><a th:href="@{/shop}">店舗一覧</a></li>
+                                     <li class="breadcrumb-item"><a th:href="@{/shop/__${shop.getId()}__}">店舗詳細</a></li>
+                                     <li class="breadcrumb-item active" aria-current="page">地図</li>
+                                 </ol>
+                             </nav>
+                             <h1 class="text-center" th:text="${shop.getName()}"></h1>
+                             <div th:if="${errorMessage}" class="alert alert-warning">
+                                <span th:text="${errorMessage}"></span>
+                               
+                            </div>
+                             <div th:if="${successMessage}" class="alert alert-warning">
+								 <span th:text="${successMessage}"></span>
+							 </div>
+							 <br>
+                             
+                             <ul class="nav nav-tabs mb-2">
+								 <li class="nav-item">
+									 <a class="nav-link link-secondary" th:href="@{/shop/__${shop.getId()}__}">トップ</a> 
+								 </li>
+								 <li class="nav-item">
+									 <a class="nav-link link-secondary" th:href="@{/shop/__${shop.getId()}__/reservation/createform}">予約</a>
+								 </li>
+								 <li class="nav-item">
+									 <a class="nav-link link-secondary" th:href="@{/shop/__${shop.getId()}__/review}">レビュー</a>
+								 </li>
+								 <li class="nav-item">
+									 <a class="nagoyameshi-activ nav-link active text-white"aria-current="page" th:href="@{/shop/__${shop.getId()}__/map}">地図</a>
+								 </li>
+							 </ul>
+							 <br>
+							 <br>
+                             
+                              <script src="http://maps.google.com/maps/api/js?key=AIzaSyCtPm_1RFZHhvrBw95zXKoCHwbba26HJqw&language=ja"></script>
+                            
+        <div id="map"></div>
+
+    <script th:inline="javascript">
+		 var lat = /*[[${shop.getLat()}]]*/'';
+		  var lng = /*[[${shop.getLng()}]]*/'';
+        var MyLatLng = new google.maps.LatLng(lat, lng);
+        var Options = {
+            zoom: 15,      //地図の縮尺値
+            center: MyLatLng,    //地図の中心座標
+            mapTypeId: 'roadmap'   //地図の種類
+            
+
+        };
+        var map = new google.maps.Map(document.getElementById('map'), Options);
+    </script>
+        
+
+                             
+										   
+						  </div>
+					  </div>
+				  </div>
+			  </main>
+		  <!-- フッター -->
+             <div th:replace="~{fragment :: footer}"></div>
+         </div>    
+         
+         <div th:replace="~{fragment :: scripts}"></div>
+         
+	 </body>
+ </html>

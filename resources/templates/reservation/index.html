@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<div th:replace="~{fragment :: meta}"></div>   
+              
+         <div th:replace="~{fragment :: styles}"></div>
+           
+         <title>予約一覧</title> 
+	</head>
+	<body>
+		<div class="nagoyameshi-wrapper">
+			<div th:replace="~{fragment :: header}"></div>
+			<main>
+				<div class="container nagoyameshi-container pb-5">
+					<div class="row justify-content-center">
+						<div class="col-xxl-9 col-xl-10 col-lg-11">
+							<nav class="my-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                 <ol class="breadcrumb mb-0"> 
+                                     <li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>                       
+                                     <li class="breadcrumb-item active" aria-current="page">予約一覧</li>
+                                 </ol>
+                             </nav>
+                             <h1 class="mb-3 text-center">予約一覧</h1>  
+             
+                              <div th:if="${param.reserved}" class="alert alert-warning">
+                                 予約が完了しました。
+                             </div>
+                              <div class="tab">
+                              <ul class="tab__menu">
+                              <li class="tab__menu-item is-active" data-tab="01">現在の予約</li>
+                              <li class="tab__menu-item" data-tab="02">過去の予約</li>
+      
+                              </ul>
+                              <div class="tab__panel">　　　　　　　
+      　　　　　　　　　　　　　　<div class="tab__panel-box tab__panel-box001 is-show" data-panel="01">
+        　　　　　　　　　　　　　<p class="tab__panel-text">
+			　　　　　　　　　　　<table class="table">
+                                 <thead>
+                                     <tr>                            
+                                         <th scope="col">店舗名</th>
+                                         <th scope="col">予約日</th>
+                                         <th scope="col">予約時間</th>
+                                         <th scope="col">予約人数</th>                                        
+                                     </tr>
+                                 </thead>   
+                                 <tbody>                                                    
+                                     <tr th:each="reservation : ${currentReservationsPage}">
+                                         <td>
+                                             <a th:href="@{/shop/__${reservation.getShop().getId()}__}" th:text="${reservation.getShop().getName()}"></a>
+                                         </td>
+                                         <td th:text="${reservation.getReservationDate()}"></td>
+                                         <td th:text="${reservation.getReservationTime()}"></td>
+                                         <td th:text="${reservation.getNumberOfPeople + '名'}"></td>
+                                     </tr>                                    
+                                 </tbody>
+                             </table>
+                             
+                             <div th:if="${currentReservationsPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                 <nav aria-label="予約一覧ページ">
+                                     <ul class="pagination">
+                                         <li class="page-item">
+                                             <span th:if="${currentReservationsPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a th:unless="${currentReservationsPage.isFirst()}" th:href="@{/reservation(page = ${currentReservationsPage.getNumber() - 1}, tab=01)}" class="page-link nagoyameshi-page-link1">前</a>
+                                         </li>
+                                         <li th:each="i : ${#numbers.sequence(0, currentReservationsPage.getTotalPages() - 1)}" class="page-item">
+                                             <span th:if="${i == currentReservationsPage.getNumber()}" class="page-link active nagoyameshi-active" th:text="${i + 1}"></span>
+                                             <a th:unless="${i == currentReservationsPage.getNumber()}" th:href="@{/reservation(page = ${i}, tab=01)}" class="page-link nagoyameshi-page-link1" th:text="${i + 1}"></a>
+                                         </li>
+                                         <li class="page-item">                        
+                                             <span th:if="${currentReservationsPage.isLast()}" class="page-link disabled">次</span>
+                                             <a th:unless="${currentReservationsPage.isLast()}" th:href="@{/reservation(page = ${currentReservationsPage.getNumber() + 1}, tab=01)}" class="page-link nagoyameshi-page-link1">次</a>
+                                         </li>
+                                     </ul>
+                                 </nav> 
+                             </div> 
+			
+		　　　　　　　　　　　　　</p>
+		
+     　　　　　　　　　　　　　　　 </div>
+     　　　　　　　　　　　　　　　 <div class="tab__panel-box tab__panel-box002" data-panel="02">
+        　　　　　　　　　　　　　　<p class="tab__panel-text">
+			　　　　　　　　　　　　　　<table class="table">
+                                 <thead>
+                                     <tr>                            
+                                         <th scope="col">店舗名</th>
+                                         <th scope="col">予約日</th>
+                                         <th scope="col">予約時間</th>
+                                         <th scope="col">予約人数</th>                                        
+                                     </tr>
+                                 </thead>   
+                                 <tbody>                                                    
+                                     <tr th:each="reservation : ${pastReservationsPage}">
+                                         <td>
+                                             <a th:href="@{/shop/__${reservation.getShop().getId()}__}" th:text="${reservation.getShop().getName()}"></a>
+                                         </td>
+                                         <td th:text="${reservation.getReservationDate()}"></td>
+                                         <td th:text="${reservation.getReservationTime()}"></td>
+                                         <td th:text="${reservation.getNumberOfPeople + '名'}"></td>
+                                     </tr>                                    
+                                 </tbody>
+                             </table>
+			
+                             <div th:if="${pastReservationsPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                 <nav aria-label="予約一覧ページ">
+                                     <ul class="pagination">
+                                         <li class="page-item">
+                                             <span th:if="${pastReservationsPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a th:unless="${pastReservationsPage.isFirst()}" th:href="@{/reservation(page = ${pastReservationsPage.getNumber() - 1},tab=02)}" class="page-link nagoyameshi-page-link2">前</a>
+                                         </li>
+                                         <li th:each="i : ${#numbers.sequence(0, pastReservationsPage.getTotalPages() - 1)}" class="page-item">
+                                             <span th:if="${i == pastReservationsPage.getNumber()}" class="page-link active nagoyameshi-active" th:text="${i + 1}"></span>
+                                             <a th:unless="${i == pastReservationsPage.getNumber()}" th:href="@{/reservation(page = ${i},tab=02)}" class="page-link nagoyameshi-page-link2" th:text="${i + 1}"></a>
+                                         </li>
+                                         <li class="page-item">                        
+                                             <span th:if="${pastReservationsPage.isLast()}" class="page-link disabled">次</span>
+                                             <a th:unless="${pastReservationsPage.isLast()}" th:href="@{/reservation(page = ${pastReservationsPage.getNumber() + 1},tab=02)}" class="page-link nagoyameshi-page-link2">次</a>
+                                         </li>
+                                     </ul>
+                                 </nav> 
+                             </div>
+		</p>
+      　　　　　　　　　　　　　　　</div>
+      
+   　　　　　　　　　　　　　　　　 </div>
+                             </div>
+                             
+                               
+						</div>
+					</div>
+				</div>
+			</main>
+			<!-- フッター -->
+             <div th:replace="~{fragment :: footer}"></div>
+         </div>    
+         
+         <div th:replace="~{fragment :: scripts}"></div>
+          <script th:src="@{/js/tab.js}"></script>
+         
+	</body>
+</html>
