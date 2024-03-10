@@ -124,8 +124,8 @@
                                      <input th:if="${capacity}" type="hidden" name="capacity" th:value="${capacity}">                                     
                                      <select class="form-select form-select-sm nagoyameshi-sort-box" name="order" onChange="this.form.submit();">
                                          <option value="createdAtDesc" th:selected="${order == null}">新着順</option>                                            
-                                         <option value="priceAsc" th:selected="${order == 'priceAsc'}">宿泊料金が安い順</option>
-                                         <option value="priceDesc" th:selected="${order == 'priceDesc'}">宿泊料金が高い順</option>
+                                         <option value="priceAsc" th:selected="${order == 'priceAsc'}">予算が安い順</option>
+                                         <option value="priceDesc" th:selected="${order == 'priceDesc'}">予算が高い順</option>
                                      </select>   
                                  </form>                                  
                              </div>        
