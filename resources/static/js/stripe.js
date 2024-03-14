@@ -2,6 +2,7 @@ const stripe = Stripe('pk_test_51OJrqCLVD5FyumV8QJzDzSTY2Gg4dzmgnj7mcUEc2TCdj3BX
  const paymentButton = document.querySelector('#paymentButton');
 
  paymentButton.addEventListener('click', () => {
+	 console.log('Button clicked!');
    stripe.redirectToCheckout({
      sessionId: sessionId
    })

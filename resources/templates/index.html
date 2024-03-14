@@ -18,9 +18,14 @@
 					ログアウトしました。
 				</div>
 				<div th:if="${successMessage}" class="alert alert-warning">
-                         <span th:text="${successMessage}"></span>
+               <span th:text="${successMessage}"></span>
+               </div>
+                     
+                     <div th:if="${errorMessage}" class="alert alert-warning">
+                         <span th:text="${errorMessage}"></span>
                      </div>  
 				</div>
+				
 				<form method="get" th:action="@{/shop}" class="mb-2  nagoyameshi-search-form">
                              <div class="input-group">
                                  <input type="text" class="form-control" name="area" th:value="${area}" placeholder="最寄駅">
