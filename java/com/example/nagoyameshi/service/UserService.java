@@ -2,6 +2,7 @@ package com.example.nagoyameshi.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.nagoyameshi.entity.Role;
 import com.example.nagoyameshi.entity.User;
@@ -16,8 +18,6 @@ import com.example.nagoyameshi.form.SignupForm;
 import com.example.nagoyameshi.form.UserEditForm;
 import com.example.nagoyameshi.repository.RoleRepository;
 import com.example.nagoyameshi.repository.UserRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -89,14 +89,26 @@ public UserService(UserRepository userRepository,RoleRepository roleRepository,P
  
  
  @Transactional
- public void updateRole(User user, String roleName) {
-     Role role = roleRepository.findByName(roleName);
-     user.setRole(role);
-     userRepository.save(user);
+ public void updateRole(Map<String, String> paymentIntentObject) {
+     
+
+         String userId = paymentIntentObject.get("userId");
+        
+         User user = userRepository.findById(Long.parseLong(userId))
+                 .orElseThrow(() -> new RuntimeException("指定されたユーザーが見つかりません。"));
+        
+         String roleName = paymentIntentObject.get("roleName");
+        
+
+         Role role = roleRepository.findByName(roleName);
+         user.setRole(role);
+
+         // ユーザーを保存
+         userRepository.save(user);
+
+         
  }
  
- 
-
  public void refreshAuthenticationByRole(String newRole) {
      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -106,6 +118,7 @@ public UserService(UserRepository userRepository,RoleRepository roleRepository,P
 
      SecurityContextHolder.getContext().setAuthentication(newAuth);
  }
+ 
  
  public int getGeneralUserCount() {
      List<User> generalUsers = userRepository.findByRoleName("ROLE_GENERAL");

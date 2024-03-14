@@ -1,5 +1,8 @@
 package com.example.nagoyameshi.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,30 +34,38 @@ public class SubscriptionController {
 	@Autowired
 	private StripeService stripeService;
 		
-		@GetMapping("/register")
-		public String index(Model model, HttpServletRequest httpServletRequest) {
-			String sessionId = stripeService.createStripeSession(httpServletRequest);
-			
-			model.addAttribute("sessionId", sessionId);
-			
-			return "subscription/register";
-		}
+	@GetMapping("/register")
+	public String index(Model model, HttpServletRequest httpServletRequest, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+	    User user = userDetailsImpl.getUser(); // ログインしているユーザーを取得
+	    String sessionId = stripeService.createStripeSession(httpServletRequest, user);
+	    model.addAttribute("sessionId", sessionId);
+	    return "subscription/register";
+	}
 			
 		
 	
-
-		@PostMapping("/create")
-		public String create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes,Model model) {
-			
-			User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
-			
-			userService.updateRole(user,"ROLE_PREMIUM");
-
-			userService.refreshAuthenticationByRole("ROLE_PREMIUM");
-			redirectAttributes.addFlashAttribute("successMessage", "有料会員の登録が完了しました。");
-			return "redirect:/";
-		}
+	@PostMapping("/create")
+	public String create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes) {
+	    User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
 		
+		
+		
+
+		Map<String, String> paymentIntentObject = new HashMap<>();
+	    paymentIntentObject.put("userId", String.valueOf(user.getId()));
+	    paymentIntentObject.put("roleName", "ROLE_PREMIUM");
+	    userService.updateRole(paymentIntentObject);
+
+	    userService.refreshAuthenticationByRole("ROLE_PREMIUM");
+	    
+	   
+	    redirectAttributes.addFlashAttribute("successMessage", "有料会員の登録が完了しました。");
+	  
+	    
+	    
+	    return "redirect:/";
+	}
+
 		
 		@GetMapping("/cancel")
 		public String cancel() {
@@ -67,7 +78,13 @@ public class SubscriptionController {
 			
 		
 			
-				userService.updateRole(user, "ROLE_GENERAL");
+
+			Map<String, String> paymentIntentObject = new HashMap<>();
+		    paymentIntentObject.put("userId", String.valueOf(user.getId()));
+		    paymentIntentObject.put("roleName", "ROLE_GENERAL");
+
+		
+		    userService.updateRole(paymentIntentObject);
 				userService.refreshAuthenticationByRole("ROLE_GENERAL");
 				redirectAttributes.addFlashAttribute("successMessage", "有料プランを解約しました。");
 			

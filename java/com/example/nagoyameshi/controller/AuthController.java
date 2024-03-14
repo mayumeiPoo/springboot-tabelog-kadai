@@ -76,7 +76,7 @@ public class AuthController {
              String successMessage = "会員登録が完了しました。";
              model.addAttribute("successMessage", successMessage);            
          } else {
-             String errorMessage = "トークンが無効です。";
+             String errorMessage = "トークンが無効です。管理者に連絡してください。";
              model.addAttribute("errorMessage", errorMessage);
          }
          
