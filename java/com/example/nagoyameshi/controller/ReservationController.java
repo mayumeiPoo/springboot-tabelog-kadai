@@ -82,8 +82,8 @@ public class ReservationController {
          Shop shop = shopRepository.getReferenceById(id);
          Integer numberOfPeople = reservationInputForm.getNumberOfPeople();   
          Integer capacity = shop.getCapacity();
-         
-         
+         String fromReservationTime = reservationInputForm.getFromReservationTime();
+         String timeStart = shop.getTimeStart();
          
          
          if (numberOfPeople != null) {
@@ -91,7 +91,13 @@ public class ReservationController {
                  FieldError fieldError = new FieldError(bindingResult.getObjectName(), "numberOfPeople", "予約人数が定員を超えています。");
                  bindingResult.addError(fieldError);                
              }            
-         }         
+         }   
+         if (fromReservationTime != null) {
+             if (!reservationService.isWithinTimeStart(fromReservationTime,timeStart)) {
+                 FieldError fieldError = new FieldError(bindingResult.getObjectName(), "fromReservationTime", "予約時間は営業時間内でお願いします。");
+                 bindingResult.addError(fieldError);                
+             }            
+         } 
          
          
          if (bindingResult.hasErrors()) {            

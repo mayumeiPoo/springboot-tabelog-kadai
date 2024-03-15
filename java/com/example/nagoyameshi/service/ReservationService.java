@@ -2,6 +2,7 @@ package com.example.nagoyameshi.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +47,13 @@ public class ReservationService {
         
         reservationRepository.save(reservation);
     }    
+	
+    public boolean isWithinTimeStart(String fromReservationTime, String timeStart) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+        LocalTime parsedTimeStart = LocalTime.parse(timeStart, formatter);
+        LocalTime parsedFromReservationTime = LocalTime.parse(fromReservationTime, formatter);
+        return parsedFromReservationTime.isAfter(parsedTimeStart) || parsedFromReservationTime.equals(parsedTimeStart);
+    }
 	
 	public boolean isWithinCapacity(Integer numberOfPeople, Integer capacity) {
         return numberOfPeople <= capacity;
