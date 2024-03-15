@@ -54,6 +54,12 @@ public class ReservationService {
         LocalTime parsedFromReservationTime = LocalTime.parse(fromReservationTime, formatter);
         return parsedFromReservationTime.isAfter(parsedTimeStart) || parsedFromReservationTime.equals(parsedTimeStart);
     }
+    public boolean isWithinTimeEnd(String fromReservationTime, String timeEnd) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+        LocalTime parsedTimeEnd = LocalTime.parse(timeEnd, formatter);
+        LocalTime parsedFromReservationTime = LocalTime.parse(fromReservationTime, formatter);
+        return parsedFromReservationTime.isBefore(parsedTimeEnd) || parsedFromReservationTime.equals(parsedTimeEnd);
+    }
 	
 	public boolean isWithinCapacity(Integer numberOfPeople, Integer capacity) {
         return numberOfPeople <= capacity;

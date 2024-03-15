@@ -84,6 +84,7 @@ public class ReservationController {
          Integer capacity = shop.getCapacity();
          String fromReservationTime = reservationInputForm.getFromReservationTime();
          String timeStart = shop.getTimeStart();
+         String timeEnd = shop.getTimeEnd();
          
          
          if (numberOfPeople != null) {
@@ -94,6 +95,12 @@ public class ReservationController {
          }   
          if (fromReservationTime != null) {
              if (!reservationService.isWithinTimeStart(fromReservationTime,timeStart)) {
+                 FieldError fieldError = new FieldError(bindingResult.getObjectName(), "fromReservationTime", "予約時間は営業時間内でお願いします。");
+                 bindingResult.addError(fieldError);                
+             }            
+         } 
+         if (fromReservationTime != null) {
+             if (!reservationService.isWithinTimeEnd(fromReservationTime,timeEnd)) {
                  FieldError fieldError = new FieldError(bindingResult.getObjectName(), "fromReservationTime", "予約時間は営業時間内でお願いします。");
                  bindingResult.addError(fieldError);                
              }            
