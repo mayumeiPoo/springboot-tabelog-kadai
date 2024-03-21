@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import com.example.nagoyameshi.service.StripeService;
 import com.example.nagoyameshi.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/subscription")
 public class SubscriptionController {
@@ -45,27 +49,27 @@ public class SubscriptionController {
 		
 	
 	@PostMapping("/create")
-	public String create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes) {
+	public String create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response) {
+	    // ユーザーのロールを更新
 	    User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
-		
-		
-		
-
-		Map<String, String> paymentIntentObject = new HashMap<>();
+	    Map<String, String> paymentIntentObject = new HashMap<>();
 	    paymentIntentObject.put("userId", String.valueOf(user.getId()));
 	    paymentIntentObject.put("roleName", "ROLE_PREMIUM");
 	    userService.updateRole(paymentIntentObject);
-
+	    
+	 
 	    userService.refreshAuthenticationByRole("ROLE_PREMIUM");
 	    
-	   
-	    redirectAttributes.addFlashAttribute("successMessage", "有料会員の登録が完了しました。");
-	  
+	    // Spring Securityのログアウト処理を実行
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null) {
+	        new SecurityContextLogoutHandler().logout(request, response, authentication);
+	    }
+	    request.getSession().invalidate();
 	    
-	    
-	    return "redirect:/";
-	}
 
+	    return "redirect:/login?reserved";
+	}
 		
 		@GetMapping("/cancel")
 		public String cancel() {

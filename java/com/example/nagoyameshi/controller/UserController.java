@@ -46,7 +46,7 @@ public class UserController {
 	public String edit(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model,HttpServletRequest httpServletRequest) {
 		User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
 		Integer amount = 0;
-		UserEditForm userEditForm = new UserEditForm(user.getId(), user.getName(), user.getFurigana(), user.getPostalCode(), user.getAddress(), user.getPhoneNumber(), user.getEmail(),amount);
+		UserEditForm userEditForm = new UserEditForm(user.getId(), user.getName(), user.getFurigana(), user.getPostalCode(), user.getAddress(), user.getPhoneNumber(), user.getBirthmonth(), user.getBirthday(), user.getGender(), user.getEmail());
 		model.addAttribute("userEditForm", userEditForm);
 		
 		

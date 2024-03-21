@@ -60,6 +60,9 @@ public UserService(UserRepository userRepository,RoleRepository roleRepository,P
      user.setPostalCode(userEditForm.getPostalCode());
      user.setAddress(userEditForm.getAddress());
      user.setPhoneNumber(userEditForm.getPhoneNumber());
+     user.setBirthmonth(userEditForm.getBirthmonth());
+     user.setBirthday(userEditForm.getBirthday());
+     user.setGender(userEditForm.getGender());
      user.setEmail(userEditForm.getEmail());
      
 
@@ -90,25 +93,23 @@ public UserService(UserRepository userRepository,RoleRepository roleRepository,P
  
  @Transactional
  public void updateRole(Map<String, String> paymentIntentObject) {
-     
+     String userId = paymentIntentObject.get("userId");
 
-         String userId = paymentIntentObject.get("userId");
-        
-         User user = userRepository.findById(Long.parseLong(userId))
-                 .orElseThrow(() -> new RuntimeException("指定されたユーザーが見つかりません。"));
-        
-         String roleName = paymentIntentObject.get("roleName");
-        
+     User user = userRepository.findById(Long.parseLong(userId))
+             .orElseThrow(() -> new RuntimeException("指定されたユーザーが見つかりません。"));
 
-         Role role = roleRepository.findByName(roleName);
-         user.setRole(role);
+     String roleName = paymentIntentObject.get("roleName");
 
-         // ユーザーを保存
-         userRepository.save(user);
+     Role role = roleRepository.findByName(roleName);
+     user.setRole(role);
 
-         
+     // ユーザーを保存
+     userRepository.save(user);
+
+     // ロールが変更されたので、セッションを無効化して再ログインさせる
+     refreshAuthenticationByRole(roleName);
  }
- 
+
  public void refreshAuthenticationByRole(String newRole) {
      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -118,8 +119,6 @@ public UserService(UserRepository userRepository,RoleRepository roleRepository,P
 
      SecurityContextHolder.getContext().setAuthentication(newAuth);
  }
- 
- 
  public int getGeneralUserCount() {
      List<User> generalUsers = userRepository.findByRoleName("ROLE_GENERAL");
      return generalUsers.size();

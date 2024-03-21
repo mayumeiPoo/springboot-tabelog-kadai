@@ -149,5 +149,14 @@ public class ReservationController {
          
          return "redirect:/reservation?reserved";
      }
+     
+     @PostMapping("/reservation/{id}/delete")
+     public String delete(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes) {        
+         reservationRepository.deleteById(id);
+                 
+         redirectAttributes.addFlashAttribute("successMessage", "予約をキャンセルしました。");
+         
+         return "redirect:/reservation";
+     }
 
 }

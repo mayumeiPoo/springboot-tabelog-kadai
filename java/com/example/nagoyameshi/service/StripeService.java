@@ -36,7 +36,7 @@ private final UserService userService;
          SessionCreateParams params = SessionCreateParams.builder()
                  
                  .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-                 .setSuccessUrl(requestUrl.replaceAll("/subscription/register", "") + "/")
+                 .setSuccessUrl(requestUrl.replaceAll("/subscription/register", "") + "/login?reserved")
                  .addLineItem(
            		      SessionCreateParams.LineItem.builder()
            		        .setPrice("price_1Oqwg7LVD5FyumV87uuv7x4s")

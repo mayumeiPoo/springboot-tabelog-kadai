@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 @AllArgsConstructor
@@ -26,10 +27,18 @@ public class UserEditForm {
     @NotBlank(message = "電話番号を入力してください。")
     private String phoneNumber;
     
+    @NonNull
+    private String birthmonth;
+    
+    @NonNull
+    private String birthday;
+    
+    private String gender;
+    
     @NotBlank(message = "メールアドレスを入力してください。")
     private String email;
 
-    private Integer amount;
+    
 
 	
     
