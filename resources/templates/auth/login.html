@@ -18,6 +18,10 @@
                              <div th:if="${param.error}" class="alert alert-danger">
 								 メールアドレスまたはパスワードが正しくありません。
 							 </div>
+							  <div th:if="${param.reserved}" class="alert alert-warning text-center">
+                                 有料会員の登録が完了しました。<br>
+                                 再度ログイン入力してください。
+                             </div>
 							 <form th:action="@{/login}" method="post">
 								 <div class="form-group mb-3">
 									 <input type="text" class="form-control" name="username" autocomplete="email" placeholder="メールアドレス" autofocus>
